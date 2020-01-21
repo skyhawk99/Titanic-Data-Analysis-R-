@@ -1,0 +1,54 @@
+# Load raw data 
+
+train <- read.csv("train.csv", header = TRUE)
+test <- read.csv("test.csv", header = TRUE)
+
+# Add a "Survived" variable to the test to allow for combining datasets
+test.survived <- data.frame(survived = rep("None", nrow(test)), test[,])
+
+# Swap first two columns to match ordering in 'train' data frame 
+test.survived <- test.survived[c(2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)]
+
+# Make names in both datasets the same
+names(train) == names(test.survived)
+
+# Combine datasets
+data.combined <- rbind(train, test.survived)
+
+# A bit about data types (e.g. factors)
+str(data.combined)
+
+# Change 'Survived' and 'Pclass' from integers to factors
+data.combined$Survived <- as.factor(data.combined$Survived)
+data.combined$Pclass <- as.factor(data.combined$Pclass)
+
+# Take a look at gross survival rates
+table(data.combined$Survived)
+
+# Distribution across classes
+table(data.combined$Pclass)
+
+# Load up ggplot2 package for visualisations 
+library(ggplot2)
+
+# Hypothesis - those in the upper classes survived at a higher rate
+train$Pclass <- as.factor(train$Pclass)
+ggplot(train, aes(x = Pclass, fill = factor(Survived))) +
+  stat_count(width = 0.5) + 
+  xlab("Pclass") +
+  ylab("Total Count") + 
+  labs(fill = "Survived")
+
+# Examine the first few names in the training dataset
+head(as.character(train$Name))
+
+# Find out how many unique names there are across both 'train' and 
+# 'test' 
+length(unique(as.character(data.combined$Name)))
+
+# Take a closer look at the two duplicate names
+dup.names <- as.character(data.combined[which(duplicated(as.character(
+  data.combined$Name))), "Name"])
+
+# Take a look at the records in the combined dataset
+data.combined[which(data.combined$Name %in% dup.names),]
