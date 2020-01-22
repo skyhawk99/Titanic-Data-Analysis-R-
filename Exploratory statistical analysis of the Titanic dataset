@@ -52,3 +52,20 @@ dup.names <- as.character(data.combined[which(duplicated(as.character(
 
 # Take a look at the records in the combined dataset
 data.combined[which(data.combined$Name %in% dup.names),]
+
+# Load the 'stringr' package
+library(stringr)
+
+# Look for correlation between title and other variables
+
+# Miss
+misses <- data.combined[which(str_detect(data.combined$Name, "Miss.")), ]
+misses[1:5,]
+
+# Mrs
+mrses <- data.combined[which(str_detect(data.combined$Name, "Mrs.")), ]
+mrses[1:5,]
+
+# Mr (using 'male' from 'Sex' to avoid contamination with 'Mrs')
+males <- data.combined[which(train$Sex == "male"), ]
+males[1:5,]
